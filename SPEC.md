@@ -134,5 +134,5 @@ Frontend:
 Delivery:
 - [x] README "How it works" and "Assumptions", taken from section 3 of this file
 - [x] ADR for the stateless basket API
-- [ ] `make build` verified (Docker builds are untested since the move to pnpm)
+- [x] `make build` and `make test` verified in Docker, dev and prod images
 - [ ] Push to a public GitHub repo, then confirm CI passes
