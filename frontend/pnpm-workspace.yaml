@@ -1,0 +1,4 @@
+# unrs-resolver's postinstall only checks for its native binding, which the
+# platform-specific optional dependency already provides.
+allowBuilds:
+  unrs-resolver: false
