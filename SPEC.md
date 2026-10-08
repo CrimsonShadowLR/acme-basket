@@ -111,12 +111,12 @@ The brief only asks for `add`. Removing items, changing quantities, checkout, st
 Everything below the tooling. The repo today has the layout, a healthcheck, Docker, CI and docs.
 
 Backend domain (plain TypeScript, `backend/src/domain`):
-- [ ] `Product` and `Catalogue` with prices in cents
-- [ ] `DeliveryRule` interface and a tiered implementation built from bands
-- [ ] `Offer` interface and the red "second half price" implementation
-- [ ] `Basket` with `add(code)` and `total()`, taking catalogue, delivery rule and offers in the constructor
-- [ ] Domain error for unknown codes
-- [ ] Unit tests: the four examples, boundaries at 4999/5000/8999/9000, 4 reds, empty basket, unknown code
+- [x] `Product` and `Catalogue` with prices in cents
+- [x] `DeliveryRule` interface and a tiered implementation built from bands
+- [x] `Offer` interface and the red "second half price" implementation
+- [x] `Basket` with `add(code)` and `total()`, taking catalogue, delivery rule and offers in the constructor
+- [x] Domain error for unknown codes
+- [x] Unit tests: the four examples, boundaries at 4999/5000/8999/9000, 4 reds, empty basket, unknown code
 
 Backend API:
 - [ ] Nest module wiring the catalogue, delivery rule and offers

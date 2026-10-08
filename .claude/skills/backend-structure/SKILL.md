@@ -69,28 +69,30 @@ Rules that keep the layers honest:
 TypeScript interfaces do not exist at runtime, so bind them through a token:
 
 ```ts
-// domain/catalogue/catalogue.ts
-export interface Catalogue { priceOf(code: string): Money; }
-export const CATALOGUE = Symbol('Catalogue');
+// domain/delivery/delivery-rule.ts
+export interface DeliveryRule { chargeFor(subtotal: Cents): Cents; }
+export const DELIVERY_RULE = Symbol('DeliveryRule');
 
 // modules/basket.module.ts
 providers: [
-  { provide: CATALOGUE, useFactory: () => InMemoryCatalogue.fromConfig(products) },
+  { provide: DELIVERY_RULE, useFactory: () => new TieredDelivery(deliveryTiers) },
   PriceBasketHandler,
 ]
 
 // use-cases/basket/price-basket/price-basket.handler.ts
-constructor(@Inject(CATALOGUE) private readonly catalogue: Catalogue) {}
+constructor(@Inject(DELIVERY_RULE) private readonly delivery: DeliveryRule) {}
 ```
 
-Swapping an implementation (another offer, another delivery rule, a DB-backed catalogue) is a one-line change in the module. Nothing else moves.
+`Catalogue` is a concrete class built from a product list, so it needs no token; the module provides it with `useFactory`.
+
+Swapping an implementation (another offer, another delivery rule) is a one-line change in the module. Nothing else moves.
 
 ## Strategy pattern
 
 Variable business rules are strategies behind a small interface in `domain/`. One class per rule, and the code that combines them never names a concrete rule:
 
 ```
-domain/offers/offer.ts                          interface Offer { discountFor(items): Money }
+domain/offers/offer.ts                          interface Offer { discountFor(items): Cents }
 domain/offers/buy-one-get-second-half-price.ts  implements Offer
 ```
 
