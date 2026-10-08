@@ -16,6 +16,12 @@ describe('Catalogue', () => {
     expect(() => new Catalogue([red, red])).toThrow('Duplicate product code');
   });
 
+  it('rejects a price that is not whole cents', () => {
+    expect(() => new Catalogue([{ ...red, price: 32.95 }])).toThrow(
+      'Price of R01 must be a whole, non-negative number of cents',
+    );
+  });
+
   it('lists every product', () => {
     expect(new Catalogue([red, blue]).all()).toEqual([red, blue]);
   });

@@ -1,4 +1,4 @@
-import type { Cents } from '../money.js';
+import { assertCents, type Cents } from '../money.js';
 
 export interface Product {
   readonly code: string;
@@ -23,6 +23,7 @@ export class Catalogue {
       if (byCode.has(product.code)) {
         throw new Error(`Duplicate product code: ${product.code}`);
       }
+      assertCents(product.price, `Price of ${product.code}`);
       byCode.set(product.code, product);
     }
     this.byCode = byCode;

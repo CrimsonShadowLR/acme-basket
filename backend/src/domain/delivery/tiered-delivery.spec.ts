@@ -28,6 +28,22 @@ describe('TieredDelivery', () => {
     expect(delivery.chargeFor(100)).toBe(495);
   });
 
+  it('rejects two tiers with the same starting point', () => {
+    expect(
+      () =>
+        new TieredDelivery([
+          { from: 0, charge: 495 },
+          { from: 0, charge: 295 },
+        ]),
+    ).toThrow('Duplicate delivery tier from: 0');
+  });
+
+  it('rejects a charge that is not whole cents', () => {
+    expect(() => new TieredDelivery([{ from: 0, charge: 4.95 }])).toThrow(
+      'Delivery charge from 0 must be a whole, non-negative number of cents',
+    );
+  });
+
   it('requires a tier starting at 0', () => {
     expect(() => new TieredDelivery([{ from: 5000, charge: 295 }])).toThrow(
       'starting at 0',

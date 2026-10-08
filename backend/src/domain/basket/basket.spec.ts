@@ -56,7 +56,7 @@ describe('Basket', () => {
     });
   });
 
-  it('ships free from $90', () => {
+  it('ships free over $90', () => {
     // 4 × 2495 = 9980.
     expect(basketWith(['G01', 'G01', 'G01', 'G01']).breakdown().delivery).toBe(
       0,
@@ -92,6 +92,14 @@ describe('Basket', () => {
       delivery: 495,
       total: 495,
     });
+  });
+
+  it.each([-1, 0.5])('rejects an offer that returns %d', (amount) => {
+    const broken: Offer = { discountFor: () => amount };
+
+    expect(() => basketWith(['B01'], [broken]).total()).toThrow(
+      'must be a whole, non-negative number of cents',
+    );
   });
 
   it('rejects an unknown product code', () => {

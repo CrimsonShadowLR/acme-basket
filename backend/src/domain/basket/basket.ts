@@ -1,6 +1,6 @@
 import type { Catalogue, Product } from '../catalogue/catalogue.js';
 import type { DeliveryRule } from '../delivery/delivery-rule.js';
-import type { Cents } from '../money.js';
+import { assertCents, type Cents } from '../money.js';
 import type { Offer } from '../offers/offer.js';
 
 export interface BasketBreakdown {
@@ -36,10 +36,11 @@ export class Basket {
     }
 
     const subtotal = this.items.reduce((sum, item) => sum + item.price, 0);
-    const offered = this.offers.reduce(
-      (sum, offer) => sum + offer.discountFor(this.items),
-      0,
-    );
+    const offered = this.offers.reduce((sum, offer) => {
+      const discount = offer.discountFor(this.items);
+      assertCents(discount, `Discount from ${offer.constructor.name}`);
+      return sum + discount;
+    }, 0);
     const discount = Math.min(offered, subtotal);
     // Delivery is charged on the subtotal after offers. Charging it on the
     // full subtotal gives $52.37 for R01, R01 instead of the expected $54.37.
