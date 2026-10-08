@@ -6,6 +6,7 @@ import { PriceBreakdown } from "./PriceBreakdown";
 
 interface BasketPanelProps {
   items: string[];
+  quantities: ReadonlyMap<string, number>;
   products: Product[];
   onAdd: (code: string) => void;
   onRemoveOne: (code: string) => void;
@@ -15,6 +16,7 @@ interface BasketPanelProps {
 
 export function BasketPanel({
   items,
+  quantities,
   products,
   onAdd,
   onRemoveOne,
@@ -22,7 +24,7 @@ export function BasketPanel({
   onClear,
 }: BasketPanelProps) {
   const price = useBasketPrice(items);
-  const lines = toLines(items, products);
+  const lines = toLines(products, quantities);
 
   return (
     <section
@@ -89,11 +91,14 @@ function priceErrorMessage(error: Error): string {
 }
 
 /** One line per product, in catalogue order, with how many are in the basket. */
-function toLines(items: string[], products: Product[]): Line[] {
+function toLines(
+  products: Product[],
+  quantities: ReadonlyMap<string, number>,
+): Line[] {
   return products
+    .filter((product) => quantities.has(product.code))
     .map((product) => ({
       product,
-      quantity: items.filter((code) => code === product.code).length,
-    }))
-    .filter((line) => line.quantity > 0);
+      quantity: quantities.get(product.code) ?? 0,
+    }));
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { countByCode } from "./basketItems";
 import { BasketPanel } from "./components/BasketPanel";
 import { ProductList } from "./components/ProductList";
 import { useBasketItems } from "./hooks/useBasketItems";
@@ -22,10 +23,7 @@ export function Basket() {
     );
   }
 
-  const quantities = new Map<string, number>();
-  for (const code of basket.items) {
-    quantities.set(code, (quantities.get(code) ?? 0) + 1);
-  }
+  const quantities = countByCode(basket.items);
 
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] gap-8 md:grid-cols-[minmax(0,1fr)_24rem]">
@@ -44,6 +42,7 @@ export function Basket() {
       </section>
       <BasketPanel
         items={basket.items}
+        quantities={quantities}
         products={products.data}
         onAdd={basket.add}
         onRemoveOne={basket.removeOne}

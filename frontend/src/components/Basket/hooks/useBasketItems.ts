@@ -1,25 +1,20 @@
 import { useCallback, useState } from "react";
+import { addItem, removeAllItems, removeOneItem } from "../basketItems";
 
-/**
- * The basket's product codes, one entry per unit, in the order added. The
- * API keeps no baskets, so this list is the basket.
- */
+/** The basket's item list, with the operations the UI needs. */
 export function useBasketItems() {
   const [items, setItems] = useState<string[]>([]);
 
   const add = useCallback((code: string) => {
-    setItems((current) => [...current, code]);
+    setItems((current) => addItem(current, code));
   }, []);
 
   const removeOne = useCallback((code: string) => {
-    setItems((current) => {
-      const index = current.lastIndexOf(code);
-      return index === -1 ? current : current.toSpliced(index, 1);
-    });
+    setItems((current) => removeOneItem(current, code));
   }, []);
 
   const removeAll = useCallback((code: string) => {
-    setItems((current) => current.filter((item) => item !== code));
+    setItems((current) => removeAllItems(current, code));
   }, []);
 
   const clear = useCallback(() => setItems([]), []);
