@@ -2,7 +2,7 @@
 
 Proof of concept of the sales basket for Acme Widget Co. A NestJS API prices the basket and a Next.js UI lets you fill it.
 
-> Status: project layout and tooling are in place. The basket itself is not implemented yet.
+> Status: the basket, API and UI work. The README's "How it works" and "Assumptions" sections are still to be written.
 
 ## The task
 

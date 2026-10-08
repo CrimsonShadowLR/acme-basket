@@ -126,10 +126,10 @@ Backend API:
 - [x] e2e tests for both endpoints, including the four examples
 
 Frontend:
-- [ ] Product list with "add" buttons
-- [ ] Basket panel with items, remove/clear, and the price breakdown
-- [ ] Money formatting at the edge (cents to `$x.xx`)
-- [ ] Loading and error states
+- [x] Product list with "add" buttons
+- [x] Basket panel with items, remove/clear, and the price breakdown
+- [x] Money formatting at the edge (cents to `$x.xx`)
+- [x] Loading and error states
 
 Delivery:
 - [ ] README "How it works" and "Assumptions", taken from section 3 of this file
