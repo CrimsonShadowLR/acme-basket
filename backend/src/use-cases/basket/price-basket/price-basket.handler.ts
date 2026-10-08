@@ -1,14 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Basket } from '../../../domain/basket/basket.js';
 import { Catalogue } from '../../../domain/catalogue/catalogue.js';
-import {
-  DELIVERY_RULE,
-  type DeliveryRule,
-} from '../../../domain/delivery/delivery-rule.js';
-import { OFFERS, type Offer } from '../../../domain/offers/offer.js';
+import type { DeliveryRule } from '../../../domain/delivery/delivery-rule.js';
+import type { Offer } from '../../../domain/offers/offer.js';
 import type { Handler } from '../../shared/handler.js';
 import type { PriceBasketRequest } from './price-basket.request.js';
 import type { PriceBasketResponse } from './price-basket.response.js';
+import { DELIVERY_RULE, OFFERS } from './price-basket.tokens.js';
 
 /**
  * Builds a basket from the requested codes and prices it. The API is

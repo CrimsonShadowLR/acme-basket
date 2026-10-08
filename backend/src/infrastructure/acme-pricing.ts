@@ -6,7 +6,7 @@ import type { Offer } from '../domain/offers/offer.js';
 /**
  * Acme Widget Co's products, delivery charges and offers, as given in the
  * brief. Prices are in cents. A database or pricing service would replace
- * this file and nothing else.
+ * this file and the factories in modules/ that read it.
  */
 export const acmeProducts: readonly Product[] = [
   { code: 'R01', name: 'Red Widget', price: 3295 },
@@ -20,6 +20,6 @@ export const acmeDeliveryTiers: readonly DeliveryTier[] = [
   { from: 9000, charge: 0 },
 ];
 
-export function acmeOffers(): Offer[] {
-  return [new BuyOneGetSecondHalfPrice('R01')];
-}
+export const acmeOffers: readonly Offer[] = [
+  new BuyOneGetSecondHalfPrice('R01'),
+];

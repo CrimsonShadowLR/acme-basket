@@ -11,6 +11,3 @@ import type { Cents } from '../money.js';
 export interface Offer {
   discountFor(items: readonly Product[]): Cents;
 }
-
-/** Injection token for the list of active offers. */
-export const OFFERS = Symbol('Offers');

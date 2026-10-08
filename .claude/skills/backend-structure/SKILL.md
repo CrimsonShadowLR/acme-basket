@@ -4,7 +4,7 @@ description: Reference for the NestJS backend layout in `backend/`. Use whenever
 ---
 # Backend Structure
 
-The backend lives in `backend/`. It is a NestJS 12 app (ESM, TypeScript strict) organised in layers. It prices the Acme Widget Co basket. There is no database: `infrastructure/` loads the product catalogue, delivery tiers and offers from configuration.
+The backend lives in `backend/`. It is a NestJS 12 app (ESM, TypeScript strict) organised in layers. It prices the Acme Widget Co basket. There is no database: `infrastructure/acme-pricing.ts` holds Acme's products, delivery tiers and offers as data.
 
 ## Basket rules
 
@@ -42,7 +42,7 @@ backend/
 │   │   ├── shared/handler.ts          # Handler<TRequest, TResponse>
 │   │   └── <feature>/<action>/        # <action>.handler.ts, .request.ts, .response.ts
 │   ├── domain/             # framework-free business rules, no Nest imports
-│   └── infrastructure/     # sources that feed the domain (catalogue, rules config)
+│   └── infrastructure/     # data the modules feed into the domain (acme-pricing.ts)
 └── test/                   # e2e: boot AppModule and hit it over HTTP
 ```
 
@@ -53,15 +53,15 @@ HTTP request
   → controllers/<feature>.controller.ts     translate HTTP ↔ request/response DTOs
   → use-cases/<feature>/<action>/*.handler  orchestrate one use case
   → domain/                                  pure rules: entities, value objects, strategies
-  ← infrastructure/                          implements domain interfaces (e.g. a catalogue source)
+  ← infrastructure/                          pricing data the modules pass into the domain
 ```
 
 Rules that keep the layers honest:
 
-- **Controllers** only map HTTP to a request DTO, call `handler.execute(request)` and return the response DTO. No business rules, no `if` on prices.
+- **Controllers** only map HTTP to a request DTO, call `handler.execute(request)` and return the response DTO. No business rules, no `if` on prices. They don't use domain objects, except domain error types, which they may import to map to HTTP statuses (see `unknown-product.filter.ts`).
 - **Handlers** implement `Handler<TRequest, TResponse>`. They depend on domain interfaces, never on concrete infrastructure classes.
 - **Domain** has zero imports from `@nestjs/*`, Express or `process.env`. It can be unit-tested with plain `new`.
-- **Infrastructure** implements interfaces declared in the domain. The domain never imports infrastructure.
+- **Infrastructure** supplies the data and implementations the modules feed into the domain. The domain never imports it.
 - **Modules** are the only place that knows concrete classes. They bind interfaces to implementations with injection tokens.
 
 ## Dependency injection
@@ -71,6 +71,8 @@ TypeScript interfaces do not exist at runtime, so bind them through a token:
 ```ts
 // domain/delivery/delivery-rule.ts
 export interface DeliveryRule { chargeFor(subtotal: Cents): Cents; }
+
+// use-cases/basket/price-basket/price-basket.tokens.ts
 export const DELIVERY_RULE = Symbol('DeliveryRule');
 
 // modules/basket.module.ts
@@ -105,7 +107,7 @@ Adding a rule means adding a class and registering it in the module.
 - Files: `kebab-case` with a role suffix: `*.controller.ts`, `*.module.ts`, `*.handler.ts`, `*.request.ts`, `*.response.ts`, `*.spec.ts`, `*.e2e-spec.ts`.
 - Classes: `PascalCase` matching the file (`PriceBasketHandler` in `price-basket.handler.ts`).
 - Use-case folders are verbs: `use-cases/basket/price-basket/`.
-- Injection tokens: `SCREAMING_SNAKE` `Symbol`, exported beside the interface.
+- Injection tokens: `SCREAMING_SNAKE` `Symbol`, in a `<action>.tokens.ts` file beside the handler that injects them. They are container plumbing, so they stay out of the domain, and not in `modules/` either, because handlers would then import from the wiring layer.
 
 ## Tests
 
@@ -116,7 +118,7 @@ Adding a rule means adding a class and registering it in the module.
 ## Adding a feature: checklist
 
 1. **Domain**: interfaces, value objects and strategies in `src/domain/<concept>/`, with specs.
-2. **Infrastructure**: implementations of domain interfaces in `src/infrastructure/`.
+2. **Infrastructure**: data or implementations the domain needs, in `src/infrastructure/`.
 3. **Use case**: `src/use-cases/<feature>/<action>/` with handler, request and response.
 4. **Controller**: `src/controllers/<feature>.controller.ts`, thin.
 5. **Module**: `src/modules/<feature>.module.ts`. Bind tokens, register controller and handler.

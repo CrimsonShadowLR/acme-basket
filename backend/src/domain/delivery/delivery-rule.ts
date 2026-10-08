@@ -4,5 +4,3 @@ import type { Cents } from '../money.js';
 export interface DeliveryRule {
   chargeFor(subtotal: Cents): Cents;
 }
-
-export const DELIVERY_RULE = Symbol('DeliveryRule');
