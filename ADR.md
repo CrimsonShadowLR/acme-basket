@@ -24,7 +24,7 @@ Short records of the decisions that shape this repo. Newest last.
 
 **Decision.** NestJS 12 for the API and Next.js 16 (App Router) for the UI.
 
-**Consequences.** Nest has a DI container, so binding an `Offer` or `DeliveryRule` interface to a concrete class happens in one module file and the domain stays plain TypeScript. Nest modules give each feature one place for that wiring (controller → handler → domain). Next gives routing, a production server and Tailwind with no extra setup. The UI is small, so most of it runs as client components that call the API through React Query.
+**Consequences.** Nest supplies the HTTP side: routing, the exception filter that maps `UnknownProductError` to 422, CORS, shutdown hooks and a testing module for the e2e suite. Its modules give each feature a conventional place to wire concrete rules to the handler (controller → handler → domain). The DI container is a convenience here, not something plain constructors couldn't do: the handler specs build everything with `new`. What matters is that the domain stays plain TypeScript with no Nest imports, so it can be read, tested and lifted out on its own. Next gives routing, a production server and Tailwind with no extra setup. The UI is small, so most of it runs as client components that call the API through React Query.
 
 ---
 

@@ -87,21 +87,27 @@ curl -X POST localhost:8000/basket/total \
 # {"subtotal":6590,"discount":1648,"delivery":495,"total":5437}
 ```
 
-An unknown product code returns 422 with the code. A body that isn't `{ "items": string[] }`, or holds more than 1000 codes, returns 400.
+An unknown product code returns 422 with the code. A body that isn't `{ "items": string[] }`, or holds more than 1000 codes, returns 400. The body is checked by hand in the controller; one string-array field doesn't justify a validation library.
 
 ### UI
 
-One page, with products on the left and the basket on the right (stacked on a phone). Each basket line has −/+ and Remove, and the panel shows subtotal, offers, delivery and total as the API returns them. The UI has no pricing logic.
+One page, with products on the left and the basket on the right (stacked on a phone). Each basket line has −/+ and Remove, and the panel shows subtotal, offers, delivery and total as the API returns them. The UI shows line prices as unit price × quantity. Every discount, delivery charge and total comes from the API.
 
 ### Tests
 
 ```bash
+make test       # everything below, in fresh containers
+
 cd backend
 pnpm test       # domain and handler unit tests
 pnpm test:e2e   # the API over HTTP
+pnpm typecheck  # including the specs, which the build skips
+
+cd frontend
+pnpm test       # the basket list operations and money formatting
 ```
 
-The four example baskets from the brief are tests in both suites. The unit tests also cover the $50 and $90 boundaries, four reds, an empty basket, several offers at once and unknown codes.
+The four example baskets from the brief are tests in both backend suites. The unit tests also cover the $50 and $90 boundaries, four reds, an empty basket, several offers at once, unknown codes and pricing data that isn't whole cents.
 
 ## Assumptions
 
@@ -112,6 +118,7 @@ The brief leaves these open. The example totals settle the first two. The rest a
 - **The red offer applies to every pair.** Four reds get two discounts. The examples only go up to three reds, which get one either way.
 - **The bands start at $50 and $90 exactly.** $50.00 pays $2.95 and $90.00 ships free, matching "under $50" and "$90 or more".
 - **An empty basket costs $0.00.** Read literally, it is "under $50" and pays $4.95 delivery.
+- **Any basket with items pays delivery.** Even if offers brought the goods to $0, something still ships. Only an empty basket ships free.
 - **Offers stack by adding their discounts.** Each offer works out its own discount from the items and doesn't see the others. The total discount never goes over the subtotal.
 - **Unknown product codes are errors.** `add` throws and the API returns 422 rather than skipping them.
 - **Prices are in US dollars, with no tax.** The brief doesn't mention either.

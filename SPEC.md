@@ -1,6 +1,6 @@
 # Basket spec
 
-What the Acme Widget Co basket has to do, what the brief leaves open, and the call this repo makes on each open point. `README.md` has the short version of the task. This file is the working reference for building it.
+What the Acme Widget Co basket has to do, what the brief leaves open, and the call this repo makes on each open point. `README.md` has the short version of the task. This file is the working document the build followed. For the current state, `README.md` and `ADR.md` are the reference.
 
 ## 1. What the brief asks for
 
@@ -76,7 +76,7 @@ Taken literally, an empty basket is "under $50" and costs $4.95. Charging delive
 
 ### 3.4 Unknown product code
 
-The brief doesn't say what `add("X99")` does. It throws a domain error, and the API answers 400 or 422 with the bad code. Silently ignoring it would hide typos in the UI or in API calls.
+The brief doesn't say what `add("X99")` does. It throws a domain error, and the API answers 422 with the bad code. Silently ignoring it would hide typos in the UI or in API calls.
 
 ### 3.5 Rounding beyond this offer
 
@@ -108,8 +108,6 @@ The brief only asks for `add`. Removing items, changing quantities, checkout, st
 
 ## 5. What is missing in the repo
 
-Everything below the tooling. The repo today has the layout, a healthcheck, Docker, CI and docs.
-
 Backend domain (plain TypeScript, `backend/src/domain`):
 - [x] `Product` and `Catalogue` with prices in cents
 - [x] `DeliveryRule` interface and a tiered implementation built from bands
@@ -134,5 +132,5 @@ Frontend:
 Delivery:
 - [x] README "How it works" and "Assumptions", taken from section 3 of this file
 - [x] ADR for the stateless basket API
-- [x] `make build` and `make test` verified in Docker, dev and prod images
+- [x] `make build` and `make test` verified on the dev images; prod images built and smoke-tested with `BUILD_TARGET=prod docker compose up --build --wait` and curl
 - [ ] Push to a public GitHub repo, then confirm CI passes

@@ -13,8 +13,9 @@ The frontend lives in `frontend/`. It is a Next.js 16 App Router app with React 
 - **Framework**: Next.js 16 (App Router, Turbopack), React 19.
 - **Server state**: `@tanstack/react-query` v5.
 - **HTTP**: `fetch`, wrapped by `src/shared/httpClient.ts`.
-- **Styling**: Tailwind v4 (`@import "tailwindcss"` in `globals.css`, no `tailwind.config.js`).
+- **Styling**: Tailwind v4 (`@import "tailwindcss"` in `globals.css`, no `tailwind.config.js`), loaded through the `@tailwindcss/turbopack` rule in `next.config.ts`, so there is no `postcss.config`.
 - **Lint/types**: ESLint (`eslint-config-next`), `pnpm typecheck` (`next typegen && tsc --noEmit`).
+- **Tests**: Vitest (`pnpm test`) for plain functions, in `*.test.ts` next to the code. Logic worth testing goes in a plain function (like `Basket/basketItems.ts`), not inside a hook or component.
 
 ## Directory layout
 
@@ -61,7 +62,13 @@ Components never call `fetch`. Hooks never build URLs. API functions only use `s
 
 ### API functions: `components/<Feature>/api/<verb><Thing>.ts`
 - Declare the response `interface` in camelCase, matching the backend JSON.
-- Named export: `export function getProducts(): Promise<Product[]> { return get<Product[]>("/products"); }`.
+- Named export that unwraps the response if needed:
+  ```ts
+  export async function getProducts(): Promise<Product[]> {
+    const { products } = await get<ProductsResponse>("/products");
+    return products;
+  }
+  ```
 - Paths are relative; `httpClient` owns the base URL.
 
 ### Hooks: `components/<Feature>/hooks/use<Thing>.ts`
@@ -76,7 +83,7 @@ Components never call `fetch`. Hooks never build URLs. API functions only use `s
 ### Styling
 - Tailwind utility classes only. Global styles live in `globals.css`.
 - Light theme: `bg-background` page, white cards with `border-zinc-200`, `text-zinc-500` for muted text.
-- Container pattern: `mx-auto w-full max-w-3xl px-6 py-16`.
+- Container pattern: `mx-auto w-full max-w-5xl px-6 py-16` (see `app/page.tsx`).
 
 ## Adding a feature: checklist
 
@@ -89,7 +96,7 @@ Components never call `fetch`. Hooks never build URLs. API functions only use `s
 ## Running
 
 - `make dev`: Compose Watch syncs `frontend/src` and `frontend/public` into the container. Next hot-reloads.
-- `make frontend-check`: lint and typecheck inside the container.
+- `make frontend-check`: lint, typecheck and tests in a one-off container. No running stack needed.
 - On the host: `cd frontend && pnpm dev` (port 3000).
 
 ## Common pitfalls

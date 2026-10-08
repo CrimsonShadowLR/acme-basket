@@ -112,7 +112,8 @@ Adding a rule means adding a class and registering it in the module.
 ## Tests
 
 - **Unit** (`pnpm test`): `*.spec.ts` next to the file under test. Domain specs use plain `new` and no Nest testing module.
-- **E2E** (`pnpm test:e2e`): `test/*.e2e-spec.ts`. Build the app with `Test.createTestingModule({ imports: [AppModule] })`, call `configureApp(app, loadAppConfig({}))`, then hit it with `supertest`.
+- **E2E** (`pnpm test:e2e`): `test/*.e2e-spec.ts`. Boot the app once per file with `createApp()` from `test/create-app.ts` in `beforeAll`, then hit it with `supertest`.
+- **Types** (`pnpm typecheck`): the build excludes specs and Vitest strips types, so run it after touching tests.
 - Test names describe behaviour ("applies free delivery at $90"), not methods.
 
 ## Adding a feature: checklist
@@ -128,12 +129,11 @@ Adding a rule means adding a class and registering it in the module.
 ## Running
 
 - `make dev`: Compose Watch. Edits to `backend/src` and `backend/test` sync into the container and Nest recompiles.
-- `make backend-test`: unit, e2e and lint inside the container.
+- `make backend-test`: typecheck, lint, format check, unit and e2e tests in a one-off container. No running stack needed.
 - On the host: `cd backend && pnpm start:dev` (port 8000).
 
 ## Common pitfalls
 
-- **`Cannot find module '/app/dist/main'`**: a stale `*.tsbuildinfo` made tsc skip emitting. It is in `.dockerignore`; delete it locally if it happens on the host.
 - **`ERR_MODULE_NOT_FOUND` on a relative import**: ESM needs the `.js` extension (`'./app.module.js'`).
 - **Nest cannot resolve a dependency**: a constructor parameter has no `@Inject(...)` (needed for classes too, see Dependency injection), or the provider is missing from the module.
 - **CORS error in the browser**: add the origin to `CORS_ORIGINS` (comma-separated).
