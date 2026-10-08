@@ -6,7 +6,5 @@ export function useProducts() {
     queryKey: ["products"],
     queryFn: getProducts,
     staleTime: Infinity,
-    // One retry, so a stopped API shows an error in about a second, not seven.
-    retry: 1,
   });
 }

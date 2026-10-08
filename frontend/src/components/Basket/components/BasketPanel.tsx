@@ -1,3 +1,4 @@
+import { HttpError } from "@/shared/httpClient";
 import type { Product } from "../api/getProducts";
 import { useBasketPrice } from "../hooks/useBasketPrice";
 import { LineItems, type Line } from "./LineItems";
@@ -60,8 +61,7 @@ export function BasketPanel({
               role="alert"
               className="rounded-lg bg-red-50 p-3 text-sm text-red-700"
             >
-              Couldn&apos;t price the basket. Check that the API is running and
-              try again.
+              {priceErrorMessage(price.error)}
             </p>
           ) : price.data ? (
             <PriceBreakdown price={price.data} isUpdating={price.isFetching} />
@@ -72,6 +72,20 @@ export function BasketPanel({
       )}
     </section>
   );
+}
+
+/**
+ * A 4xx means the API is up and rejected the basket, so show its reason
+ * (for example an unknown code or too many items) instead of blaming the API.
+ */
+function priceErrorMessage(error: Error): string {
+  if (error instanceof HttpError && error.status < 500) {
+    const body = error.body as { message?: unknown } | null;
+    if (typeof body?.message === "string") {
+      return `Couldn't price the basket: ${body.message}`;
+    }
+  }
+  return "Couldn't price the basket. Check that the API is running and try again.";
 }
 
 /** One line per product, in catalogue order, with how many are in the basket. */
