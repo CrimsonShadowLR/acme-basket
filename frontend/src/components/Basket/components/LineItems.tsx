@@ -34,6 +34,7 @@ export function LineItems({
               type="button"
               onClick={() => onRemoveAll(product.code)}
               className="self-start text-xs text-zinc-500 hover:text-red-600"
+              aria-label={`Remove ${product.name}`}
             >
               Remove
             </button>

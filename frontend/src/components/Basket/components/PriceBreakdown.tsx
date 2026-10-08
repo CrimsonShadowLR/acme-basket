@@ -25,7 +25,12 @@ export function PriceBreakdown({
         label="Delivery"
         value={price.delivery === 0 ? "Free" : formatMoney(price.delivery)}
       />
-      <div className="mt-2 flex items-baseline justify-between border-t border-zinc-200 pt-3">
+      {/* Announce the new total, with its label, after each change. */}
+      <div
+        className="mt-2 flex items-baseline justify-between border-t border-zinc-200 pt-3"
+        aria-live="polite"
+        aria-atomic="true"
+      >
         <dt className="font-medium">Total</dt>
         <dd className="text-xl font-semibold tabular-nums">
           {formatMoney(price.total)}
