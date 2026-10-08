@@ -132,7 +132,7 @@ Frontend:
 - [x] Loading and error states
 
 Delivery:
-- [ ] README "How it works" and "Assumptions", taken from section 3 of this file
+- [x] README "How it works" and "Assumptions", taken from section 3 of this file
 - [x] ADR for the stateless basket API
 - [ ] `make build` verified (Docker builds are untested since the move to pnpm)
 - [ ] Push to a public GitHub repo, then confirm CI passes
