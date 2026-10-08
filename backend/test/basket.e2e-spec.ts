@@ -1,25 +1,18 @@
-import { Test } from '@nestjs/testing';
 import type { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import type { App } from 'supertest/types.js';
-import { AppModule } from '../src/app.module.js';
-import { configureApp } from '../src/bootstrap.js';
-import { loadAppConfig } from '../src/config/app.config.js';
+import { createApp } from './create-app.js';
 
 describe('Basket API', () => {
   let app: INestApplication<App>;
 
-  beforeEach(async () => {
-    const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-
-    app = moduleRef.createNestApplication();
-    configureApp(app, loadAppConfig({}));
-    await app.init();
+  // The app keeps no state between requests (ADR-005), so one instance
+  // serves the whole file.
+  beforeAll(async () => {
+    app = await createApp();
   });
 
-  afterEach(async () => {
+  afterAll(async () => {
     await app.close();
   });
 
@@ -80,6 +73,15 @@ describe('Basket API', () => {
       await request(app.getHttpServer())
         .post('/basket/total')
         .send(body)
+        .expect(400);
+    });
+
+    it('rejects malformed JSON with 400', async () => {
+      // Express's body parser rejects this before the controller runs.
+      await request(app.getHttpServer())
+        .post('/basket/total')
+        .set('content-type', 'application/json')
+        .send('{"items": [')
         .expect(400);
     });
 
