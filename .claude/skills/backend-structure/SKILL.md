@@ -83,7 +83,9 @@ providers: [
 constructor(@Inject(DELIVERY_RULE) private readonly delivery: DeliveryRule) {}
 ```
 
-`Catalogue` is a concrete class built from a product list, so it needs no token; the module provides it with `useFactory`.
+`Catalogue` is a concrete class built from a product list, so the class itself is the token: `{ provide: Catalogue, useFactory: ... }` and `@Inject(Catalogue)`.
+
+Always write `@Inject(...)` on every constructor parameter, classes included. Vitest compiles with esbuild, which does not emit decorator metadata, so Nest cannot infer a parameter's type in the e2e tests.
 
 Swapping an implementation (another offer, another delivery rule) is a one-line change in the module. Nothing else moves.
 
@@ -131,7 +133,7 @@ Adding a rule means adding a class and registering it in the module.
 
 - **`Cannot find module '/app/dist/main'`**: a stale `*.tsbuildinfo` made tsc skip emitting. It is in `.dockerignore`; delete it locally if it happens on the host.
 - **`ERR_MODULE_NOT_FOUND` on a relative import**: ESM needs the `.js` extension (`'./app.module.js'`).
-- **Nest cannot resolve a dependency**: an interface was injected without `@Inject(TOKEN)`, or the provider is missing from the module.
+- **Nest cannot resolve a dependency**: a constructor parameter has no `@Inject(...)` (needed for classes too, see Dependency injection), or the provider is missing from the module.
 - **CORS error in the browser**: add the origin to `CORS_ORIGINS` (comma-separated).
 
 ## Code style

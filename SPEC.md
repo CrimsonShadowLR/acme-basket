@@ -119,11 +119,11 @@ Backend domain (plain TypeScript, `backend/src/domain`):
 - [x] Unit tests: the four examples, boundaries at 4999/5000/8999/9000, 4 reds, empty basket, unknown code
 
 Backend API:
-- [ ] Nest module wiring the catalogue, delivery rule and offers
-- [ ] `GET /products` for the UI
-- [ ] `POST /basket/total` taking `{ items: string[] }` and returning subtotal, discount, delivery and total in cents
-- [ ] Request validation and a 4xx for unknown codes
-- [ ] e2e tests for both endpoints, including the four examples
+- [x] Nest module wiring the catalogue, delivery rule and offers
+- [x] `GET /products` for the UI
+- [x] `POST /basket/total` taking `{ items: string[] }` and returning subtotal, discount, delivery and total in cents
+- [x] Request validation and a 4xx for unknown codes
+- [x] e2e tests for both endpoints, including the four examples
 
 Frontend:
 - [ ] Product list with "add" buttons
@@ -133,6 +133,6 @@ Frontend:
 
 Delivery:
 - [ ] README "How it works" and "Assumptions", taken from section 3 of this file
-- [ ] ADR for the stateless basket API
+- [x] ADR for the stateless basket API
 - [ ] `make build` verified (Docker builds are untested since the move to pnpm)
 - [ ] Push to a public GitHub repo, then confirm CI passes

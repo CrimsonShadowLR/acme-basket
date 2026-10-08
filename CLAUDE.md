@@ -17,7 +17,7 @@ Everything runs through the `Makefile` (it loads `.env` if present):
 - `make test`: backend unit, e2e and lint, plus frontend lint and typecheck, inside the containers.
 - `make logs`, `make build`.
 
-Ports: backend 8000 (`GET /healthcheck`), frontend 3000.
+Ports: backend 8000 (`GET /healthcheck`, `GET /products`, `POST /basket/total`), frontend 3000.
 
 Without Docker: `pnpm start:dev` in `backend/`, `pnpm dev` in `frontend/`.
 

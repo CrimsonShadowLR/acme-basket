@@ -55,6 +55,20 @@ cd backend && pnpm install && pnpm start:dev
 cd frontend && pnpm install && pnpm dev
 ```
 
+## API
+
+All amounts are integer cents.
+
+```bash
+curl localhost:8000/products
+# {"products":[{"code":"R01","name":"Red Widget","price":3295}, ...]}
+
+curl -X POST localhost:8000/basket/total   -H 'content-type: application/json'   -d '{"items":["R01","R01"]}'
+# {"subtotal":6590,"discount":1648,"delivery":495,"total":5437}
+```
+
+An unknown product code returns 422. A body that isn't `{ "items": string[] }` returns 400. The server keeps no baskets; see ADR-005.
+
 ## Layout
 
 ```

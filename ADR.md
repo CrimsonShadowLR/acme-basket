@@ -51,3 +51,15 @@ Short records of the decisions that shape this repo. Newest last.
 **Decision.** Use pnpm, and only pnpm, in both apps. pnpm does not run dependency build scripts unless the package is listed in `allowBuilds`, and its `node_modules` only exposes declared dependencies. It is pinned through `packageManager` in each `package.json`. Docker images get it through Corepack, and CI through `pnpm/action-setup`, so everyone runs the same version. Each app keeps its own `pnpm-lock.yaml`, in line with ADR-001.
 
 **Consequences.** `pnpm install --frozen-lockfile` fails when a lockfile is out of date, in CI and in Docker. A dependency that really needs its build script goes in that app's `pnpm-workspace.yaml` under `allowBuilds`, after someone has read the script.
+
+---
+
+## ADR-005: Stateless basket API
+
+**Status:** accepted
+
+**Context.** The brief describes the basket as an object: create it with the rules, call `add` per product, then `total`. An HTTP API could mirror that with server-side baskets (`POST /baskets`, `POST /baskets/:id/items`, `GET /baskets/:id/total`), or it could price a whole basket per request.
+
+**Decision.** `POST /basket/total` takes `{ "items": ["R01", "R01"] }` and returns `{ subtotal, discount, delivery, total }` in cents. The handler creates a `Basket`, calls `add` for each code and reads the breakdown, so the brief's interface is used as written, just inside one request. `GET /products` gives the UI the catalogue. An unknown code returns 422 with the code. A body that isn't a list of strings, or has more than 1000 items, returns 400.
+
+**Consequences.** The server stores nothing, so there are no basket IDs, expiry or concurrency to handle, and any instance can answer any request. The UI owns the list of items and sends it in full after each change, which is a few bytes for a basket this size. Real carts with sessions, stock or checkout would need server-side state and a new decision.
