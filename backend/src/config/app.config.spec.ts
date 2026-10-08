@@ -19,4 +19,23 @@ describe('loadAppConfig', () => {
       corsOrigins: ['http://a.test', 'http://b.test'],
     });
   });
+
+  it('treats empty values as unset', () => {
+    expect(loadAppConfig({ PORT: '', CORS_ORIGINS: ' ' })).toEqual({
+      port: 8000,
+      corsOrigins: ['http://localhost:3000'],
+    });
+  });
+
+  it.each(['abc', '0', '-1', '65536', '80.5'])('rejects PORT=%s', (port) => {
+    expect(() => loadAppConfig({ PORT: port })).toThrow(
+      'PORT must be an integer between 1 and 65535',
+    );
+  });
+
+  it('rejects a CORS_ORIGINS list with no origins in it', () => {
+    expect(() => loadAppConfig({ CORS_ORIGINS: ' , ' })).toThrow(
+      'CORS_ORIGINS has no origins',
+    );
+  });
 });
