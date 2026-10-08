@@ -1,6 +1,3 @@
--include .env
-export
-
 .PHONY: help dev up down build logs test backend-test frontend-check
 
 help:

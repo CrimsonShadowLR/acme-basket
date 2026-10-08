@@ -44,7 +44,7 @@ make down
 - UI: http://localhost:3000
 - API: http://localhost:8000
 
-To override ports or URLs, copy `.env.example` to `.env`. To run the production images instead, set `BUILD_TARGET=prod`.
+To override the URLs, copy `.env.example` to `.env`. To run the production images instead, set `BUILD_TARGET=prod`.
 
 Without Docker you need Node 24 and pnpm. `corepack enable` installs the pnpm version pinned in each `package.json`.
 
