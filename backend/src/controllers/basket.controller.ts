@@ -36,16 +36,16 @@ function toRequest(body: unknown): PriceBasketRequest {
       ? (body as Record<string, unknown>).items
       : undefined;
 
-  if (
-    !Array.isArray(items) ||
-    !items.every((code) => typeof code === 'string')
-  ) {
+  if (!Array.isArray(items)) {
     throw new BadRequestException('items must be an array of product codes');
   }
   if (items.length > MAX_ITEMS) {
     throw new BadRequestException(
       `items cannot hold more than ${MAX_ITEMS} codes`,
     );
+  }
+  if (!items.every((code) => typeof code === 'string')) {
+    throw new BadRequestException('items must be an array of product codes');
   }
   return { items };
 }

@@ -28,6 +28,9 @@ export class PriceBasketHandler implements Handler<
   execute(request: PriceBasketRequest): PriceBasketResponse {
     const basket = new Basket(this.catalogue, this.delivery, this.offers);
     request.items.forEach((code) => basket.add(code));
-    return { ...basket.breakdown() };
+    // Pick the fields explicitly: a spread would let any field added to
+    // BasketBreakdown later leak into the API unnoticed.
+    const { subtotal, discount, delivery, total } = basket.breakdown();
+    return { subtotal, discount, delivery, total };
   }
 }
