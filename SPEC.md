@@ -133,4 +133,4 @@ Delivery:
 - [x] README "How it works" and "Assumptions", taken from section 3 of this file
 - [x] ADR for the stateless basket API
 - [x] `make build` and `make test` verified on the dev images; prod images built and smoke-tested with `BUILD_TARGET=prod docker compose up --build --wait` and curl
-- [ ] Push to a public GitHub repo, then confirm CI passes
+- [x] Push to a public GitHub repo, then confirm CI passes (first run green on all four jobs)
