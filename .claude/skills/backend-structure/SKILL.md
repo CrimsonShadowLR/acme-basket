@@ -30,10 +30,10 @@ These come from the task in `README.md`. The expected totals there pin down the 
 backend/
 ├── Dockerfile              # base → deps → dev (watch) | build → prod
 ├── vitest.config.ts        # unit tests: **/*.spec.ts
-├── vitest.config.e2e.ts    # HTTP tests: **/*.e2e-spec.ts
+├── vitest.config.integration.ts  # HTTP tests: **/*.integration-spec.ts
 ├── src/
 │   ├── main.ts             # entrypoint: load config, create app, configureApp, listen
-│   ├── bootstrap.ts        # configureApp(): CORS, shutdown hooks. Shared with e2e tests
+│   ├── bootstrap.ts        # configureApp(): CORS, shutdown hooks. Shared with integration tests
 │   ├── app.module.ts       # root module, imports feature modules only
 │   ├── config/             # loadAppConfig(env): typed settings from process.env
 │   ├── controllers/        # thin HTTP layer: <feature>.controller.ts
@@ -43,7 +43,7 @@ backend/
 │   │   └── <feature>/<action>/        # <action>.handler.ts, .request.ts, .response.ts
 │   ├── domain/             # framework-free business rules, no Nest imports
 │   └── infrastructure/     # data the modules feed into the domain (acme-pricing.ts)
-└── test/                   # e2e: boot AppModule and hit it over HTTP
+└── test/                   # integration: boot AppModule and hit it over HTTP
 ```
 
 ## Layers (request flow)
@@ -87,7 +87,7 @@ constructor(@Inject(DELIVERY_RULE) private readonly delivery: DeliveryRule) {}
 
 `Catalogue` is a concrete class built from a product list, so the class itself is the token: `{ provide: Catalogue, useFactory: ... }` and `@Inject(Catalogue)`.
 
-Always write `@Inject(...)` on every constructor parameter, classes included. Vitest compiles with esbuild, which does not emit decorator metadata, so Nest cannot infer a parameter's type in the e2e tests.
+Always write `@Inject(...)` on every constructor parameter, classes included. Vitest compiles with esbuild, which does not emit decorator metadata, so Nest cannot infer a parameter's type in the integration tests.
 
 Swapping an implementation (another offer, another delivery rule) is a one-line change in the module. Nothing else moves.
 
@@ -104,7 +104,7 @@ Adding a rule means adding a class and registering it in the module.
 
 ## Naming
 
-- Files: `kebab-case` with a role suffix: `*.controller.ts`, `*.module.ts`, `*.handler.ts`, `*.request.ts`, `*.response.ts`, `*.spec.ts`, `*.e2e-spec.ts`.
+- Files: `kebab-case` with a role suffix: `*.controller.ts`, `*.module.ts`, `*.handler.ts`, `*.request.ts`, `*.response.ts`, `*.spec.ts`, `*.integration-spec.ts`.
 - Classes: `PascalCase` matching the file (`PriceBasketHandler` in `price-basket.handler.ts`).
 - Use-case folders are verbs: `use-cases/basket/price-basket/`.
 - Injection tokens: `SCREAMING_SNAKE` `Symbol`, in a `<action>.tokens.ts` file beside the handler that injects them. They are container plumbing, so they stay out of the domain, and not in `modules/` either, because handlers would then import from the wiring layer.
@@ -112,7 +112,7 @@ Adding a rule means adding a class and registering it in the module.
 ## Tests
 
 - **Unit** (`pnpm test`): `*.spec.ts` next to the file under test. Domain specs use plain `new` and no Nest testing module.
-- **E2E** (`pnpm test:e2e`): `test/*.e2e-spec.ts`. Boot the app once per file with `createApp()` from `test/create-app.ts` in `beforeAll`, then hit it with `supertest`.
+- **Integration** (`pnpm test:integration`): `test/*.integration-spec.ts`. Boot the app once per file with `createApp()` from `test/create-app.ts` in `beforeAll`, then hit it with `supertest`.
 - **Types** (`pnpm typecheck`): the build excludes specs and Vitest strips types, so run it after touching tests.
 - Test names describe behaviour ("applies free delivery at $90"), not methods.
 
@@ -124,12 +124,12 @@ Adding a rule means adding a class and registering it in the module.
 4. **Controller**: `src/controllers/<feature>.controller.ts`, thin.
 5. **Module**: `src/modules/<feature>.module.ts`. Bind tokens, register controller and handler.
 6. **Register**: add the module to `imports` in `app.module.ts`.
-7. **Tests**: unit specs for the domain and handler, one e2e spec for the endpoint.
+7. **Tests**: unit specs for the domain and handler, one integration spec for the endpoint.
 
 ## Running
 
 - `make dev`: Compose Watch. Edits to `backend/src` and `backend/test` sync into the container and Nest recompiles.
-- `make backend-test`: typecheck, lint, format check, unit and e2e tests in a one-off container. No running stack needed.
+- `make backend-test`: typecheck, lint, format check, unit and integration tests in a one-off container. No running stack needed.
 - On the host: `cd backend && pnpm start:dev` (port 8000).
 
 ## Common pitfalls

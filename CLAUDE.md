@@ -14,7 +14,7 @@ Everything runs through the `Makefile` (it loads `.env` if present):
 
 - `make dev`: build and start both services with Compose Watch hot reload (foreground).
 - `make up` / `make down`: start in the background / stop.
-- `make test`: backend unit, e2e and lint, plus frontend lint and typecheck, inside the containers.
+- `make test`: backend typecheck, lint, format check, unit and integration tests, plus frontend lint, typecheck and unit tests, each in a one-off container.
 - `make logs`, `make build`.
 
 Ports: backend 8000 (`GET /healthcheck`, `GET /products`, `POST /basket/total`), frontend 3000.

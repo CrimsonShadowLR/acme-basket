@@ -8,7 +8,7 @@ help:
 	@echo "down            docker compose down"
 	@echo "build           docker compose build --no-cache"
 	@echo "logs            docker compose logs -f"
-	@echo "backend-test    typecheck, lint, format check, unit and e2e tests in a fresh backend container"
+	@echo "backend-test    typecheck, lint, format check, unit and integration tests in a fresh backend container"
 	@echo "frontend-check  lint, typecheck and tests in a fresh frontend container"
 	@echo "test            backend-test and frontend-check (no running stack needed)"
 
@@ -31,9 +31,9 @@ logs:
 # without `make up`. BUILD_TARGET is pinned to dev because the prod images
 # have no dev dependencies or tests in them.
 backend-test:
-	BUILD_TARGET=dev docker compose run --rm --no-deps --build -T backend 		sh -c 'pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm test:e2e'
+	BUILD_TARGET=dev docker compose run --rm --no-deps --build -T backend sh -c 'pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm test:integration'
 
 frontend-check:
-	BUILD_TARGET=dev docker compose run --rm --no-deps --build -T frontend 		sh -c 'pnpm lint && pnpm typecheck && pnpm test'
+	BUILD_TARGET=dev docker compose run --rm --no-deps --build -T frontend sh -c 'pnpm lint && pnpm typecheck && pnpm test'
 
 test: backend-test frontend-check

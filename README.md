@@ -100,7 +100,7 @@ make test       # everything below, in fresh containers
 
 cd backend
 pnpm test       # domain and handler unit tests
-pnpm test:e2e   # the API over HTTP
+pnpm test:integration  # the whole app over HTTP, in-process
 pnpm typecheck  # including the specs, which the build skips
 
 cd frontend
