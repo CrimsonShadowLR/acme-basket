@@ -1,34 +1,6 @@
 # Acme Widget Co basket
 
-Proof of concept of the sales basket for Acme Widget Co. A NestJS API prices the basket and a Next.js UI lets you fill it.
-
-## The task
-
-Acme sells three products:
-
-| Product      | Code | Price  |
-|--------------|------|--------|
-| Red Widget   | R01  | $32.95 |
-| Green Widget | G01  | $24.95 |
-| Blue Widget  | B01  | $7.95  |
-
-Delivery costs $4.95 for orders under $50 and $2.95 for orders under $90. Orders of $90 or more ship free. The first offer is "buy one red widget, get the second half price".
-
-The basket is created with the catalogue, the delivery rules and the offers. It has an `add` method that takes a product code and a `total` method that returns the cost including delivery and offers.
-
-| Products                | Total  |
-|-------------------------|--------|
-| B01, G01                | $37.85 |
-| R01, R01                | $54.37 |
-| R01, G01                | $60.85 |
-| B01, B01, R01, R01, R01 | $98.27 |
-
-The deliverable:
-
-- A backend in modern Node/TypeScript that is easy to read.
-- A simple React/TypeScript UI. It doesn't need polish, but it can't be ugly.
-- A README that explains how it works and what was assumed.
-- A public GitHub repo.
+Proof of concept of the sales basket for Acme Widget Co. A NestJS API prices the basket and a Next.js UI lets you fill it. `SPEC.md` has the requirements in full.
 
 ## Running it
 

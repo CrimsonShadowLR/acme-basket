@@ -8,14 +8,14 @@ The backend lives in `backend/`. It is a NestJS 12 app (ESM, TypeScript strict) 
 
 ## Basket rules
 
-These come from the task in `README.md`. The expected totals there pin down the details the task leaves open.
+These come from the task in `SPEC.md`. The expected totals there pin down the details the task leaves open.
 
 - Money is integer cents. Dollars appear only in the UI.
 - Catalogue: R01 Red Widget 3295, G01 Green Widget 2495, B01 Blue Widget 795.
 - Delivery is charged on the subtotal after offers: under 5000 costs 495, under 9000 costs 295, 9000 or more is free.
 - Offer "buy one red widget, get the second half price" applies once per pair of R01.
 - A half cent rounds down, in the customer's favour (R01, R01 totals $54.37, not $54.38).
-- The four example baskets in `README.md` are the acceptance tests. Keep them in the domain specs.
+- The four example baskets in `SPEC.md` are the acceptance tests. Keep them in the domain specs.
 
 ## Tech stack
 

@@ -1,6 +1,6 @@
 # Basket spec
 
-What the Acme Widget Co basket has to do, what the brief leaves open, and the call this repo makes on each open point. `README.md` has the short version of the task. This file is the working document the build followed. For the current state, `README.md` and `ADR.md` are the reference.
+What the Acme Widget Co basket has to do, what the brief leaves open, and the call this repo makes on each open point. This file is the working document the build followed. For the current state, `README.md` and `ADR.md` are the reference.
 
 ## 1. What the brief asks for
 

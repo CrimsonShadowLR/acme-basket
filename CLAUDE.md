@@ -4,7 +4,7 @@ Guidance for Claude Code when working in this repository.
 
 ## What this is
 
-Proof of concept of a sales basket for Acme Widget Co, built as a coding test. The basket is created with a product catalogue, delivery charge rules and offers, and has `add(productCode)` and `total()`. The task statement is in `README.md`. `SPEC.md` has the full spec: what the examples imply about rounding and delivery, the gaps in the brief with the call made on each, and what is left to build. Read it before working on the basket. Decisions and their reasons are in `ADR.md`.
+Proof of concept of a sales basket for Acme Widget Co, built as a coding test. The basket is created with a product catalogue, delivery charge rules and offers, and has `add(productCode)` and `total()`. `SPEC.md` has the task and the full spec: the catalogue, rules and example totals, what the examples imply about rounding and delivery, the gaps in the brief with the call made on each, and what is left to build. Read it before working on the basket. Decisions and their reasons are in `ADR.md`.
 
 One repo, `backend/` and `frontend/` side by side, run with Docker Compose and a Makefile.
 
