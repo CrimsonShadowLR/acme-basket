@@ -63,3 +63,15 @@ Short records of the decisions that shape this repo. Newest last.
 **Decision.** `POST /basket/total` takes `{ "items": ["R01", "R01"] }` and returns `{ subtotal, discount, delivery, total }` in cents. The handler creates a `Basket`, calls `add` for each code and reads the breakdown, so the brief's interface is used as written, just inside one request. `GET /products` gives the UI the catalogue. An unknown code returns 422 with the code. A body that isn't a list of strings, or has more than 1000 items, returns 400.
 
 **Consequences.** The server stores nothing, so there are no basket IDs, expiry or concurrency to handle, and any instance can answer any request. The UI owns the list of items and sends it in full after each change, which is a few bytes for a basket this size. Real carts with sessions, stock or checkout would need server-side state and a new decision.
+
+---
+
+## ADR-006: Ports and adapters, with Nest's folder names
+
+**Status:** accepted
+
+**Context.** The backend was built as controller → handler → domain ← infrastructure. That is the hexagonal (ports and adapters) shape, but nothing said so, and a reviewer looking for hexagonal architecture would see Nest folders and might not recognise it.
+
+**Decision.** Keep the folder names and document the mapping in the README. `domain/` is the core. `DeliveryRule` and `Offer` are its driven ports, and their implementations (`TieredDelivery`, `BuyOneGetSecondHalfPrice`) stay in the domain because they are business rules, not I/O. `use-cases/` is the application layer, and each handler is a driving port. `controllers/` are the driving adapters, `infrastructure/` holds the driven side, and `modules/` is the composition root. Renaming folders to `core/`, `ports/` and `adapters/` would change nothing a reader can verify and would break the Nest conventions the skills describe.
+
+**Consequences.** The rule to keep is that dependencies point inward: the domain imports nothing from the other folders or from Nest. `Catalogue` is a concrete class rather than a port, because the only source is in-memory data. A database or a pricing service would turn it into an interface with one adapter per source, wired in `modules/`, and nothing in the domain or the handlers would change apart from the type they ask for.

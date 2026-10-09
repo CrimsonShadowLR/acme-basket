@@ -48,6 +48,8 @@ backend/
 
 ## Layers (request flow)
 
+This is ports and adapters with Nest's folder names: `domain/` is the core, `DeliveryRule` and `Offer` are its ports, controllers are driving adapters, `infrastructure/` is the driven side, and `modules/` is the composition root. The README and ADR-006 have the full mapping.
+
 ```
 HTTP request
   → controllers/<feature>.controller.ts     translate HTTP ↔ request/response DTOs

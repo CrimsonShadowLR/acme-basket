@@ -69,6 +69,22 @@ basket.total(); // 5437 (cents)
 - [`Offer`](backend/src/domain/offers/offer.ts) is an interface that returns a discount for the basket's items. [`BuyOneGetSecondHalfPrice`](backend/src/domain/offers/buy-one-get-second-half-price.ts) is the red widget offer.
 - [`Basket`](backend/src/domain/basket/basket.ts) adds up the prices, subtracts the offers' discounts, then charges delivery on what is left.
 
+### Ports and adapters
+
+The backend is hexagonal. The folder names follow Nest conventions, so here is how they map (ADR-006):
+
+| Hexagonal role | Where it lives |
+|---|---|
+| Core | `domain/`: `Basket`, `Catalogue`, `Cents` and the pricing rules. No framework imports. |
+| Driven ports | `DeliveryRule` and `Offer`, the interfaces the core prices with |
+| Rules behind them | `TieredDelivery` and `BuyOneGetSecondHalfPrice`, in `domain/` because they are business rules, not I/O |
+| Application (driving ports) | `use-cases/`: one `Handler` per use case, `PriceBasketHandler` and `ListProductsHandler` |
+| Driving adapters | `controllers/`: HTTP in, DTOs out, and the filter that turns `UnknownProductError` into 422 |
+| Driven adapters | `infrastructure/acme-pricing.ts`: the products, tiers and offers, today as data in code |
+| Composition root | `modules/`: the Nest modules that plug adapters and rules into the handlers |
+
+Dependencies point inward: controllers know handlers, handlers know the domain, and the domain knows nothing outside itself.
+
 The Acme products, delivery tiers and offer are data in [`backend/src/infrastructure/acme-pricing.ts`](backend/src/infrastructure/acme-pricing.ts). A new offer is a new class that implements `Offer`, added to that list. Nest modules pass these into the handler, and nothing else names them.
 
 Money is integer cents everywhere in the backend and in the API. The UI turns cents into dollars in one function, `frontend/src/shared/formatMoney.ts`.
