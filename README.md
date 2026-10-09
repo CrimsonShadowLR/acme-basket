@@ -153,3 +153,16 @@ e2e/        Playwright browser tests, run in a container by `make e2e`
 ADR.md      decisions and why
 SPEC.md     the brief in detail, its gaps, and the checklist this was built from
 ```
+
+## How this was built
+
+I built this with [Claude Code](https://claude.com/claude-code), with the reviewers' go-ahead to use AI. Claude wrote most of the code, tests and docs. I set the direction and made the calls: the stack, pnpm only, what goes in the repo, and which review findings to act on.
+
+The process is in the repo, not hidden:
+
+- `CLAUDE.md` and the two skills in `.claude/skills/` are the instructions Claude worked from: the layer rules, money as integer cents, small Conventional Commits.
+- `SPEC.md` is the working document. It lists the brief's gaps and the call made on each before any basket code was written, then served as the checklist.
+- Every Claude commit has a `Co-Authored-By: Claude` trailer.
+- Once it all worked, two Claude agents reviewed the whole codebase: one playing a new developer asking questions, the other the maintainer answering from the code. They agreed on about 45 fixes, among them the `toSpliced` bug on older Firefox, retries on 4xx errors and the build that emitted an empty `dist/`. Those are the `fix:` commits after the review.
+
+The rule throughout was that nothing counts as done until something checked it: the example totals as unit, integration and browser tests, `make test` and `make e2e` in containers, and CI.
