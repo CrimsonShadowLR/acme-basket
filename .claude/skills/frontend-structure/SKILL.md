@@ -15,7 +15,7 @@ The frontend lives in `frontend/`. It is a Next.js 16 App Router app with React 
 - **HTTP**: `fetch`, wrapped by `src/shared/httpClient.ts`.
 - **Styling**: Tailwind v4 (`@import "tailwindcss"` in `globals.css`, no `tailwind.config.js`), loaded through the `@tailwindcss/turbopack` rule in `next.config.ts`, so there is no `postcss.config`.
 - **Lint/types**: ESLint (`eslint-config-next`), `pnpm typecheck` (`next typegen && tsc --noEmit`).
-- **Tests**: Vitest (`pnpm test`) for plain functions, in `*.test.ts` next to the code. Logic worth testing goes in a plain function (like `Basket/basketItems.ts`), not inside a hook or component.
+- **Tests**: Vitest (`pnpm test`) for plain functions, in `*.test.ts` next to the code. Logic worth testing goes in a plain function (like `Basket/basketItems.ts`), not inside a hook or component. Components are covered by the Playwright suite in `e2e/` (`make e2e`), which finds elements by role and accessible name, so keep buttons labelled.
 
 ## Directory layout
 

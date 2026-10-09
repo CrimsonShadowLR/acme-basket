@@ -7,6 +7,8 @@ dist/
 out/
 *.tsbuildinfo
 coverage/
+test-results/
+playwright-report/
 
 # Secrets / env
 .env

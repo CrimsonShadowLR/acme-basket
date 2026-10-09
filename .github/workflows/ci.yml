@@ -70,3 +70,10 @@ jobs:
       - name: Stop
         if: always()
         run: docker compose down
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Browser tests against the prod images
+        run: make e2e

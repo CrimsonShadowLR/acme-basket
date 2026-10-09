@@ -15,6 +15,7 @@ Everything runs through the `Makefile` (it loads `.env` if present):
 - `make dev`: build and start both services with Compose Watch hot reload (foreground).
 - `make up` / `make down`: start in the background / stop.
 - `make test`: backend typecheck, lint, format check, unit and integration tests, plus frontend lint, typecheck and unit tests, each in a one-off container.
+- `make e2e`: Playwright browser tests against the prod images, in their own Compose project.
 - `make logs`, `make build`.
 
 Ports: backend 8000 (`GET /healthcheck`, `GET /products`, `POST /basket/total`), frontend 3000.

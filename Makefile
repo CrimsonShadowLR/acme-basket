@@ -1,4 +1,4 @@
-.PHONY: help dev up down build logs test backend-test frontend-check
+.PHONY: help dev up down build logs test backend-test frontend-check e2e
 
 help:
 	@echo "Acme Widget Co"
@@ -11,6 +11,7 @@ help:
 	@echo "backend-test    typecheck, lint, format check, unit and integration tests in a fresh backend container"
 	@echo "frontend-check  lint, typecheck and tests in a fresh frontend container"
 	@echo "test            backend-test and frontend-check (no running stack needed)"
+	@echo "e2e             Playwright in Chromium and Firefox against the prod images"
 
 dev:
 	docker compose up --build --watch
@@ -37,3 +38,10 @@ frontend-check:
 	BUILD_TARGET=dev docker compose run --rm --no-deps --build -T frontend sh -c 'pnpm lint && pnpm typecheck && pnpm test'
 
 test: backend-test frontend-check
+
+# Its own Compose project, so it runs alongside `make dev` without clashing.
+E2E = docker compose -p acme-basket-e2e -f docker-compose.yml -f docker-compose.e2e.yml
+
+e2e:
+	$(E2E) build
+	$(E2E) run --rm e2e; status=$$?; $(E2E) down; exit $$status

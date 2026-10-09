@@ -1,0 +1,30 @@
+# Browser E2E run: the prod images plus a Playwright container, on their own
+# Compose project so they don't clash with `make dev`. Use `make e2e`.
+#
+# The browser runs inside the e2e container, so it reaches the other
+# services by name: the UI at http://frontend:3000, which calls the API at
+# http://backend:8000. Nothing is published on the host.
+services:
+  backend:
+    build:
+      target: prod
+    environment:
+      CORS_ORIGINS: http://frontend:3000
+    ports: !reset []
+
+  frontend:
+    build:
+      target: prod
+      args:
+        NEXT_PUBLIC_API_BASE_URL: http://backend:8000
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://backend:8000
+    ports: !reset []
+
+  e2e:
+    build: e2e
+    depends_on:
+      frontend:
+        condition: service_healthy
+    environment:
+      BASE_URL: http://frontend:3000

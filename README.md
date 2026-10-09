@@ -95,19 +95,22 @@ One page, with products on the left and the basket on the right (stacked on a ph
 
 ### Tests
 
+Three levels, all of them run in containers:
+
+| Level | What it runs | Command |
+|---|---|---|
+| Unit | Domain classes and handlers (backend), list operations and money formatting (frontend) | `make test` |
+| Integration | The whole Nest app in-process, called over HTTP with supertest | `make test` |
+| E2E | Playwright in Chromium and Firefox, clicking through the real UI against the prod images | `make e2e` |
+
 ```bash
-make test       # everything below, in fresh containers
-
-cd backend
-pnpm test       # domain and handler unit tests
-pnpm test:integration  # the whole app over HTTP, in-process
-pnpm typecheck  # including the specs, which the build skips
-
-cd frontend
-pnpm test       # the basket list operations and money formatting
+make test   # backend typecheck, lint, format, unit + integration; frontend lint, typecheck, unit
+make e2e    # builds the prod images, runs the browser suite, then removes the containers
 ```
 
-The four example baskets from the brief are tests in both backend suites. The unit tests also cover the $50 and $90 boundaries, four reds, an empty basket, several offers at once, unknown codes and pricing data that isn't whole cents.
+The four example baskets from the brief are tested at all three levels. The unit tests also cover the $50 and $90 boundaries, four reds, an empty basket, several offers at once, unknown codes and pricing data that isn't whole cents. The E2E suite also checks the offer and delivery rows, removing a unit, Remove and Clear.
+
+`make e2e` uses its own Compose project with no published ports, so it can run while `make dev` is up. Inside it, the browser reaches the UI at `http://frontend:3000` and the API at `http://backend:8000` (`docker-compose.e2e.yml`).
 
 ## Assumptions
 
@@ -129,6 +132,7 @@ The brief leaves these open. The example totals settle the first two. The rest a
 ```
 backend/    NestJS API: controllers → use-case handlers → domain ← infrastructure
 frontend/   Next.js App Router UI: components → hooks → api → httpClient
+e2e/        Playwright browser tests, run in a container by `make e2e`
 .claude/    Claude Code skills describing the layer rules for each app
 ADR.md      decisions and why
 SPEC.md     the brief in detail, its gaps, and the checklist this was built from
