@@ -1,6 +1,6 @@
 # Acme Widget Co basket
 
-Proof of concept of the sales basket for Acme Widget Co. A NestJS API prices the basket and a Next.js UI lets you fill it. `SPEC.md` has the requirements in full.
+Proof of concept of the sales basket for Acme Widget Co. A NestJS API prices the basket and a Next.js UI lets you fill it.
 
 ## Running it
 
