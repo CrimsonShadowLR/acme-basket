@@ -121,6 +121,7 @@ The brief leaves these open. The example totals settle the first two. The rest a
 backend/    NestJS API: controllers → use-case handlers → domain ← infrastructure
 frontend/   Next.js App Router UI: components → hooks → api → httpClient
 e2e/        Playwright browser tests, run in a container by `make e2e`
+.claude/    Claude Code skills describing the layer rules for each app
 ADR.md      decisions and why
 SPEC.md     the brief in detail, its gaps, and the checklist this was built from
 ```
